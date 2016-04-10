@@ -20,7 +20,7 @@ public class Vig {
     private static boolean outFile = false;
     private static boolean inFile = false;
     
-    public static void main(String[] args) {
+    public static int main(String[] args) {
         for (int argNum = 0; argNum < args.length; argNum++)
         {
             String arg = args[argNum];
@@ -55,13 +55,32 @@ public class Vig {
                 if (key == null)
                 {
                     key = arg;
+                    if (key != null && !key.isEmpty()){
+                        for (char c : key.toCharArray())
+                        {
+                            if (!Character.isLetter(c))
+                            {
+                                System.out.println("Invalid input. Ending program.");
+                                return -1;
+                            }
+                        }
+                    }
                 }
                 else
                 {
                     System.out.println("Using first entered key");
                 }                
             }
+            if (encypt)
+            {
+               encryption(key, inFile, outFile);
+            }
+            else
+            {
+                decryption(key, inFile, outFile);
+            }
         }
+        return 0;
     }
 
     private static void openFile(String arg) 
@@ -75,6 +94,14 @@ public class Vig {
         {
             allLinesList.add(scan.nextLine());
         }
+    }
+
+    private static void encryption(String key, boolean inFile, boolean outFile) {
+        
+    }
+
+    private static void decryption(String key, boolean inFile, boolean outFile) {
+        
     }
 
 }

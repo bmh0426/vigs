@@ -42,9 +42,11 @@ public class VigTest {
     @Test
     public void testMain() {
         System.out.println("main");
-        String[] args = null;
-        Vig.main(args);
+        String[] args = {"-v", "aksdfieir3434"};
+        int expResult = 0;
+        int result = Vig.main(args);
+        assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+      //  fail("The test case is a prototype.");
     }
 }
