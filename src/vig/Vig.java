@@ -30,6 +30,7 @@ public class Vig {
             {
                 //Set encypt to true
                 encypt = true;
+                //hello
             }
             //Else If the argument indicates decryption 
             else if(arg.equals("-d"))
