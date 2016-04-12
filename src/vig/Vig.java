@@ -4,13 +4,14 @@ package vig;
 import java.io.*;
 import java.io.IOException;
 import java.util.*;
-import java.util.LinkedHashMap;
+//import java.util.LinkedHashMap;
 
 /**
- *
+ * Program to use Vigenere cipher to convert plain text into cipher text.
  * @author Brian Holland
  */
-public class Vig {
+public class Vig 
+{
 
     /**
      * @param args the command line arguments
@@ -20,11 +21,14 @@ public class Vig {
     private static boolean outFile = false;
     private static boolean inFile = false;
     
-    public static int main(String[] args) {
+    public static int main(String[] args) 
+    {
+        boolean encypt = true;
+        //Check the args given to the program.
         for (int argNum = 0; argNum < args.length; argNum++)
         {
             String arg = args[argNum];
-            boolean encypt = true;
+            
             //IF the argument indicates encryption
             if (arg.equals("-v"))
             {
@@ -52,13 +56,20 @@ public class Vig {
             //ELSE the argument is the key to use
             else
             {
+                //check if key is set.
                 if (key == null)
                 {
                     key = arg;
-                    if (key != null && !key.isEmpty()){
-                        for (char c : key.toCharArray())
+                    System.out.println(key);
+                    System.out.println(arg);
+                    //if not set set key.
+                    if (key != null && !key.isEmpty())
+                    {
+                        //loop through key.
+                        for (char cha : key.toCharArray())
                         {
-                            if (!Character.isLetter(c))
+                            //see if all charachers are letters.
+                            if (!Character.isLetter(cha))
                             {
                                 System.out.println("Invalid input. Ending program.");
                                 return -1;
@@ -71,14 +82,16 @@ public class Vig {
                     System.out.println("Using first entered key");
                 }                
             }
-            if (encypt)
-            {
-               encryption(key, inFile, outFile);
-            }
-            else
-            {
-                decryption(key, inFile, outFile);
-            }
+           
+        }
+         //check to see if encypt or decrypt
+        if (encypt)
+        {
+            encryption();
+        }
+        else
+        {
+            decryption();
         }
         return 0;
     }
@@ -95,12 +108,44 @@ public class Vig {
             allLinesList.add(scan.nextLine());
         }
     }
-
-    private static void encryption(String key, boolean inFile, boolean outFile) {
-        
+    
+    //this method encrypts the plain text to cipher text.
+    private static void encryption() 
+    {
+        String temp = "";
+        String plain;
+        Scanner scanner = new Scanner(System.in);
+        if (inFile)
+        {
+            
+        }
+        else
+        {
+            System.out.println("Please enter plain text!");
+            plain = scanner.next();
+            plain = plain.toUpperCase();
+            for (int num = 0, num1 = 0; num < plain.length(); num++)
+            {
+                System.out.println("here");
+                
+                System.out.println(plain);
+                char cha = plain.charAt(num);
+                if (Character.isLetter(cha))
+                {
+                    temp += (char)((cha + key.charAt(num1) - 13 + 'A') % 26 + 'A');
+                    num1 = ++num1 % key.length();
+                }
+                else
+                {
+                    temp += cha;
+                }
+            }
+        }
+        System.out.println("Encrypted Message: " + temp);
     }
-
-    private static void decryption(String key, boolean inFile, boolean outFile) {
+    //this method decrypts the cipher text to plain text.
+    private static void decryption() 
+    {
         
     }
 

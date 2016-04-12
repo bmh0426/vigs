@@ -4,6 +4,7 @@
  */
 package vig;
 
+import java.io.ByteArrayInputStream;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -42,7 +43,10 @@ public class VigTest {
     @Test
     public void testMain() {
         System.out.println("main");
-        String[] args = {"-v", "aksdfieir3434"};
+        String[] args = {"-v", "HAM"};
+        ByteArrayInputStream in = new ByteArrayInputStream("To be or not to be".getBytes());
+        System.out.println(in.toString());
+        System.setIn(in);
         int expResult = 0;
         int result = Vig.main(args);
         assertEquals(expResult, result);
