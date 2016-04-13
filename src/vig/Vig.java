@@ -3,6 +3,8 @@ package vig;
 
 import java.io.*;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 //import java.util.LinkedHashMap;
 
@@ -20,8 +22,9 @@ public class Vig
     private static ArrayList<String> allLinesList = null;
     private static boolean outFile = false;
     private static boolean inFile = false;
+    private static String writeFile = null;
     
-    public static int main(String[] args) 
+    public static void main(String[] args) throws IOException 
     {
         boolean encypt = true;
         //Check the args given to the program.
@@ -34,7 +37,6 @@ public class Vig
             {
                 //Set encypt to true
                 encypt = true;
-                //hello
             }
             //Else If the argument indicates decryption 
             else if(arg.equals("-d"))
@@ -43,15 +45,16 @@ public class Vig
                 encypt = false;
             }
             //Else If the argument is a input file name
-            else if(arg.contains(".in"))
+            else if(arg.contains(".in") || arg.contains("test.txt"))
             {
                 inFile = true;
                 openFile(arg);
             }
             //Check if they want to do a different than default port number
-            else if(arg.contains(".out"))
+            else if(arg.contains(".out") || arg.contains("tests.txt"))
             {
                 outFile = true;
+                writeFile = arg;
             }
             //ELSE the argument is the key to use
             else
@@ -59,9 +62,9 @@ public class Vig
                 //check if key is set.
                 if (key == null)
                 {
-                    key = arg;
-                    System.out.println(key);
-                    System.out.println(arg);
+                    key = arg.toUpperCase();
+                 //   System.out.println(key);
+               //     System.out.println(arg);
                     //if not set set key.
                     if (key != null && !key.isEmpty())
                     {
@@ -72,7 +75,7 @@ public class Vig
                             if (!Character.isLetter(cha))
                             {
                                 System.out.println("Invalid input. Ending program.");
-                                return -1;
+                           //     return -1;
                             }
                         }
                     }
@@ -93,27 +96,87 @@ public class Vig
         {
             decryption();
         }
-        return 0;
+       // return 0;
     }
 
-    private static void openFile(String arg) 
+    private static void openFile(String arg) throws IOException 
     {
         //ClassLoader loader = this.getClass().getClassLoader();
-        InputStream cardLineStream = Vig.class.getResourceAsStream(arg);
+        //InputStream cardLineStream = Vig.class.getResourceAsStream(arg);
+        //InputStream cardLineStream = loader.getResourceAsStream(arg);
         allLinesList = new ArrayList();
-        Scanner scan = new Scanner(cardLineStream);
+        //Scanner scan = new Scanner(cardLineStream);
+        //Path filePath = Paths.get(arg);
+        FileReader filePath = new FileReader(arg);
+        Scanner scan = new Scanner(filePath);
         //This will loop through the file and scan in all the lines.
         while(scan.hasNextLine())
         {
             allLinesList.add(scan.nextLine());
-        }
+        }        
     }
     
-    //this method encrypts the plain text to cipher text.
-    private static void encryption() 
+    //this method get the plain text from stdin or a file to be encrypted.
+    //it also prints the cipher text to stdout or file.
+    private static void encryption() throws IOException 
+    {     
+        String plain;
+        String temp = "";
+        ArrayList<String> tempList = new ArrayList();
+        Scanner scanner = new Scanner(System.in);
+        if (inFile)
+        {
+            for (int num = 0; num < allLinesList.size(); num++)
+            {
+                plain = allLinesList.get(num).toUpperCase();
+                temp = encrypt(plain); 
+                tempList.add(temp);                
+            }
+        }
+        else
+        {
+            System.out.println("Please enter plain text!");
+            plain = scanner.nextLine();
+            plain = plain.toUpperCase();
+            temp = encrypt(plain);
+            tempList.add(temp);
+        }
+        
+        if (outFile)
+        {
+            
+            File fileWriter = new File(writeFile);
+            FileOutputStream fileStream = new FileOutputStream(fileWriter);
+            OutputStreamWriter outStream = new OutputStreamWriter(fileStream);
+            for (int num = 0; num < tempList.size(); num++)
+            {
+                outStream.write(tempList.get(num));
+            }            
+            outStream.close();
+             /*
+            FileWriter fileWriter = new FileWriter(writeFile);
+            BufferedWriter bufferWriter = new BufferedWriter(fileWriter);
+            
+            for (int num = 0; num < tempList.size(); num++)
+            {
+                bufferWriter.write(tempList.get(num));             
+                bufferWriter.newLine();
+            }
+            bufferWriter.close();*/
+        }
+        else
+        {
+            for (int num = 0; num < tempList.size(); num++)
+            {
+                System.out.println(tempList.get(num));
+            }            
+        }
+    }
+    //this method decrypts the cipher text to plain text.
+    private static void decryption() 
     {
         String temp = "";
-        String plain;
+        String cipher;
         Scanner scanner = new Scanner(System.in);
         if (inFile)
         {
@@ -121,18 +184,18 @@ public class Vig
         }
         else
         {
-            System.out.println("Please enter plain text!");
-            plain = scanner.next();
-            plain = plain.toUpperCase();
-            for (int num = 0, num1 = 0; num < plain.length(); num++)
+            System.out.println("Please enter cipher text!");
+            cipher = scanner.nextLine();
+            cipher = cipher.toUpperCase();
+            for (int num = 0, num1 = 0; num < cipher.length(); num++)
             {
-                System.out.println("here");
-                
-                System.out.println(plain);
-                char cha = plain.charAt(num);
+              //  System.out.println("here");                
+              //  System.out.println(plain);
+              //  System.out.println(key);
+                char cha = cipher.charAt(num);
                 if (Character.isLetter(cha))
                 {
-                    temp += (char)((cha + key.charAt(num1) - 13 + 'A') % 26 + 'A');
+                    temp += (char)((cha - key.charAt(num1) + 26) % 26 + 'A');
                     num1 = ++num1 % key.length();
                 }
                 else
@@ -141,12 +204,32 @@ public class Vig
                 }
             }
         }
-        System.out.println("Encrypted Message: " + temp);
-    }
-    //this method decrypts the cipher text to plain text.
-    private static void decryption() 
-    {
-        
+        if (outFile)
+        {
+            
+        }
+        else
+        {
+            System.out.println("Decrypted Message: " + temp);
+        }    
     }
 
+    private static String encrypt(String plain) 
+    {
+        String temp  = "";
+        for (int num2 = 0, num1 = 0; num2 < plain.length(); num2++)
+        {
+            char cha = plain.charAt(num2);
+            if (Character.isLetter(cha))
+            {
+                temp += (char)((cha + key.charAt(num1) - 2 * 'A') % 26 + 'A');
+                num1 = ++num1 % key.length();
+            }
+            else
+            {
+                temp += cha;
+            }
+        }
+        return temp;
+    }
 }
