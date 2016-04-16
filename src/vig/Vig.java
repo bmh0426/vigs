@@ -1,4 +1,5 @@
 
+
 package vig;
 
 import java.io.*;
@@ -22,6 +23,10 @@ public class Vig
     private static boolean outFile = false;
     private static boolean inFile = false;
     private static String writeFile = null;
+    private static String readFile = null;
+    private static RandomAccessFile rFile;
+    private static RandomAccessFile wFile;
+    private static int number = 0;
     
     public static void main(String[] args) throws IOException 
     {
@@ -47,13 +52,16 @@ public class Vig
             else if(arg.contains(".in") || arg.contains("test.txt"))
             {
                 inFile = true;
-                openFile(arg);
+                //openFile(arg);
+               // readFile = arg;
+                rFile = new RandomAccessFile(arg, "r");
             }
             //Check if they want to do a different than default port number
             else if(arg.contains(".out") || arg.contains("tests.txt"))
             {
                 outFile = true;
-                writeFile = arg;
+              //  writeFile = arg;
+                wFile = new RandomAccessFile(arg, "rw");
             }
             //ELSE the argument is the key to use
             else
@@ -105,26 +113,29 @@ public class Vig
         //ClassLoader loader = this.getClass().getClassLoader();
         //InputStream cardLineStream = Vig.class.getResourceAsStream(arg);
         //InputStream cardLineStream = loader.getResourceAsStream(arg);
-        allLinesList = new ArrayList();
+      //  allLinesList = new ArrayList();
         //Scanner scan = new Scanner(cardLineStream);
         //Path filePath = Paths.get(arg);
-        FileReader filePath = new FileReader(arg);
-        Scanner scan = new Scanner(filePath);
+       // FileReader filePath = new FileReader(arg);
+      //  Scanner scan = new Scanner(filePath);
         //This will loop through the file and scan in all the lines.
-        while(scan.hasNextLine())
-        {
-            allLinesList.add(scan.nextLine());
-        }        
+     //   while(scan.hasNextLine())
+     //   {
+    //        allLinesList.add(scan.nextLine());
+    //    }    
+
+	    
     }
     
     //this method get the plain text from stdin or a file to be encrypted.
     //it also prints the cipher text to stdout or file.
     private static void encryption() throws IOException 
     {     
-        String plain;
-        String temp = "";
-        ArrayList<String> tempList = new ArrayList();
+        String plain = "";
+       // String temp = "";
+      //  ArrayList<String> tempList = new ArrayList();
         Scanner scanner = new Scanner(System.in);
+        char cha = ' ';
         //If an input file is given then the program will use the array list 
         //from opening and saving the plain text into that array list of string.
         //Then the program will encrypt the plain text and save that into an
@@ -133,20 +144,30 @@ public class Vig
         //from stdin and encrypt it and save it into an array list.
         if (inFile)
         {
+
+	    while (rFile.getFilePointer() < rFile.length())
+            {
+               cha = rFile.readChar();               
+               encrypt(Character.toUpperCase(cha));
+            }
+	    
             //This loops the given array list and converts all plain text
             //lines into cipher text.
-            for (int num = 0; num < allLinesList.size(); num++)
-            {
-                plain = allLinesList.get(num).toUpperCase();
-                encrypt(plain);                
-            }
+          //  for (int num = 0; num < allLinesList.size(); num++)
+         //   {
+         //       plain = allLinesList.get(num).toUpperCase();
+        //        encrypt(plain);                
+       //     }
         }
         else
         {
             System.out.println("Please enter plain text!");
             plain = scanner.nextLine();
             plain = plain.toUpperCase();
-            encrypt(plain);
+            for (int num = 0; num < plain.length(); num++)
+            {
+               encrypt(plain.charAt(num));
+            }
         }
        
     }
@@ -218,15 +239,33 @@ public class Vig
         }    
     }
 
-    private static void encrypt(String plain) throws IOException 
+    private static void encrypt(char cha) throws IOException 
     {
-        String temp  = "";
-        File fileWriter = new File(writeFile);
-        FileOutputStream fileStream = new FileOutputStream(fileWriter);
-        OutputStreamWriter outStream = new OutputStreamWriter(fileStream);
+        //String temp  = "";
+        //File fileWriter = new File(writeFile);
+        //FileOutputStream fileStream = new FileOutputStream(fileWriter);
+        //OutputStreamWriter outStream = new OutputStreamWriter(fileStream);
         //This loop runs through the plain text and gets each character and
         //checks if it is a letter. If it is then the program calcualtes
         //from the key how many letters to shift the character.
+        
+	if (outFile)
+        {
+	   if (Character.isLetter(cha))
+           {
+              wFile.writeChar((char)((cha + key.charAt(number) - 2 * 'A') % 26 + 'A'));
+              number = ++number % key.length();
+           }
+           else
+           {
+             wFile.writeChar(cha);
+           }
+        }
+        else
+	   System.out.print(cha);
+        
+        /*
+
         for (int num2 = 0, num1 = 0; num2 < plain.length(); num2++)
         {
             char cha = plain.charAt(num2);
@@ -258,7 +297,7 @@ public class Vig
             
         }
         if (outFile)
-            outStream.close();
+            outStream.close();*/
     }
 
     private static String decrypt(String cipher)
@@ -288,3 +327,4 @@ public class Vig
         return temp;
     }
 }
+
