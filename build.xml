@@ -71,4 +71,18 @@
     nbproject/build-impl.xml file. 
 
     -->
+    
+    
+            <!--
+                =================
+                CHECKSTYLE SECTION
+                =================
+     -->
+<target description="Run checkstyle on src directory." name="checkstyle">
+<taskdef resource="checkstyletask.properties"
+         classpath="lib/308checks.jar;lib/checkstyle-all-4.4.jar"/>
+<checkstyle config="nbproject/308style.xml" failOnViolation="false">
+            
+</checkstyle>
+</target>
 </project>
