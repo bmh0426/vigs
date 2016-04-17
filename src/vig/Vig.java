@@ -1,5 +1,3 @@
-
-
 package vig;
 
 import java.io.*;
