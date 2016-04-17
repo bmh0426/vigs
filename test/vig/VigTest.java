@@ -26,7 +26,7 @@ public class VigTest
     public void testMain() throws IOException, InterruptedException 
     {
         System.out.println("main");
-        String[] args = {"-v", "HAM"};
+        String[] args = {"-v", "HAM", "test.in"};
         ByteArrayInputStream in = new ByteArrayInputStream("To be or not to be".getBytes());
         System.setIn(in);
         Vig.main(args); 
