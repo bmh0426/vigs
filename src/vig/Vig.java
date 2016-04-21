@@ -94,7 +94,8 @@ public class Vig
                             /*commit*/
                             if (!Character.isLetter(cha))
                             {
-                                System.out.println("Invalid input. Ending program.");
+                                System.out.println("Invalid input. "
+                                        + "Ending program.");
                                 System.exit(-1);
                             }
                         }
@@ -107,6 +108,13 @@ public class Vig
                 }                
             }
            
+        }
+        
+        if (key == null)
+        {
+            System.out.println("A key was not given in the command line."
+                    + " Exiting program.");
+            System.exit(-1);
         }
          /*check to see if encypt or decrypt*/
         if (encypt)
