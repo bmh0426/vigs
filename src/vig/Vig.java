@@ -3,6 +3,8 @@ package vig;
 import java.io.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Program to use Vigenere cipher to convert plain text into cipher text.
@@ -134,9 +136,11 @@ public class Vig
     private static void encryption() 
     {     
         String plain = "";
-        Scanner scanner = new Scanner(System.in);
+        BufferedReader scanner = 
+                new BufferedReader(new InputStreamReader(System.in));
         char cha = ' ';
         int num = 0;
+        int rNum = 0;
         
         /*if an input file is given then the program will read in each character 
          * one at a time. After the character is read in then it is immediately 
@@ -174,14 +178,20 @@ public class Vig
         else
         {
             System.out.println("Please enter plain text!");
-            plain = scanner.nextLine();
-            plain = plain.toUpperCase();
-            /*loop through the input and send each character to encrypt.*/
-            for (int num1 = 0; num1 < plain.length(); num1++)
-            {
-                encrypt(plain.charAt(num1));                
+            try {
+                while (!(plain = scanner.readLine().toString()).equals("-1"))
+                {
+                    plain = plain.toUpperCase();
+                    for (int num1 = 0; num1 < plain.length(); num1++)
+                    {
+                        encrypt(plain.charAt(num1));                
+                    }
+                    System.out.print("\n");                   
+                }
+                
+            } catch (IOException ex) {
+                System.out.println("Could not read input");
             }
-            System.out.print("\n");
         }
         /*Check to see if an output file was given.*/
         if (outFile)
@@ -296,14 +306,18 @@ public class Vig
         else
         {
             System.out.println("Please enter cipher text!");
-            plain = scanner.nextLine();
-            plain = plain.toUpperCase();
-            /*loop through the input and send each character to decrypt.*/
-            for (int num1 = 0; num1 < plain.length(); num1++)
+            
+            while (!(plain = scanner.nextLine().toString()).equals("-1"))
             {
-                decrypt(plain.charAt(num1));
-            }
-            System.out.print("\n");
+                plain = plain.toUpperCase();
+                /*loop through the input and send each character to decrypt.*/
+                for (int num1 = 0; num1 < plain.length(); num1++)
+                {
+                    decrypt(plain.charAt(num1));
+                }
+                System.out.print("\n");
+                }
+            
         }
         /*Check to see if an output file was given.*/
         if (outFile)
