@@ -1,5 +1,3 @@
-package vig;
-
 import java.io.*;
 import java.io.IOException;
 import java.util.*;
@@ -163,7 +161,8 @@ public class Vig
             }
             catch (IOException ex)
             {
-                System.out.println("Cannot open the file to read in characters.");
+                System.out.println("Cannot open the file to read in "
+                   + "characters.");
             }
             System.out.print("\n");
             try
@@ -179,14 +178,17 @@ public class Vig
         {
             System.out.println("Please enter plain text!");
             try {
-                while (!(plain = scanner.readLine().toString()).equals("-1"))
+            	 plain = scanner.readLine();
+                while (plain != null && !plain.equals(null) 
+                   && !plain.equals("-1"))
                 {
                     plain = plain.toUpperCase();
                     for (int num1 = 0; num1 < plain.length(); num1++)
                     {
                         encrypt(plain.charAt(num1));                
                     }
-                    System.out.print("\n");                   
+                    System.out.print("\n");
+                    plain = scanner.readLine();                  
                 }
                 
             } catch (IOException ex) {
